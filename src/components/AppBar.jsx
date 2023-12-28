@@ -8,8 +8,22 @@ import Tooltip from '@mui/material/Tooltip';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
+import { Link } from 'react-router-dom';
 
-const settings = ['Profile', 'Account', 'Logout'];
+const settings = [
+    { label: 'Profile', path: '/profile' },
+    { label: 'Account', path: '/account' }
+];
+
+function CustomMenuItem({ to, label, onClose }) {
+    return (
+        <Link to={to} style={{ textDecoration: 'none', color: 'inherit' }}>
+            <MenuItem onClick={onClose}>
+                <Typography textAlign="center">{label}</Typography>
+            </MenuItem>
+        </Link>
+    );
+}
 
 function AppBar() {
     const [anchorElUser, setAnchorElUser] = useState(null);
@@ -27,7 +41,9 @@ function AppBar() {
             <Toolbar>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <img src="src/assets/imgs/LSPD.webp" alt="logo" width="150px" height="150px" />
+                        <Link to="/dashboard">
+                            <img src="src/assets/imgs/LSPD.webp" alt="logo" width="150px" height="150px" />
+                        </Link>
                         <Typography variant="h6" noWrap component="div" sx={{ marginLeft: '16px' }}>
                             Mobile Database Terminal
                         </Typography>
@@ -55,9 +71,7 @@ function AppBar() {
                             onClose={handleCloseUserMenu}
                         >
                             {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">{setting}</Typography>
-                                </MenuItem>
+                                <CustomMenuItem key={setting.label} to={setting.path} label={setting.label} onClose={handleCloseUserMenu} />
                             ))}
                         </Menu>
                     </Box>
