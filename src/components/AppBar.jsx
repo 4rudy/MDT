@@ -3,30 +3,17 @@ import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import Menu from '@mui/material/Menu';
+import Avatar from '@mui/material/Avatar';
 import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
 import { Link } from 'react-router-dom';
-
-const settings = [
-    { label: 'Profile', path: '/profile' },
-    { label: 'Account', path: '/account' }
-];
-
-function CustomMenuItem({ to, label, onClose }) {
-    return (
-        <Link to={to} style={{ textDecoration: 'none', color: 'inherit' }}>
-            <MenuItem onClick={onClose}>
-                <Typography textAlign="center">{label}</Typography>
-            </MenuItem>
-        </Link>
-    );
-}
+import { useTheme } from '../ThemeContext';
 
 function AppBar() {
     const [anchorElUser, setAnchorElUser] = useState(null);
+    const { darkMode, toggleDarkMode } = useTheme();
 
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
@@ -35,6 +22,23 @@ function AppBar() {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    const getDarkModeToggleLabel = () => {
+        return darkMode ? 'Light Mode' : 'Dark Mode';
+    };
+
+    const handleSettingsClick = (action) => {
+        if (action === 'toggleDarkMode') {
+            toggleDarkMode();
+        }
+        handleCloseUserMenu();
+    };
+
+    const settings = [
+        { label: 'Profile', path: '/profile' },
+        { label: 'Account', path: '/account' },
+        { label: getDarkModeToggleLabel(), action: 'toggleDarkMode' },
+    ];
 
     return (
         <MuiAppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, boxShadow: 'none' }}>
@@ -71,7 +75,11 @@ function AppBar() {
                             onClose={handleCloseUserMenu}
                         >
                             {settings.map((setting) => (
-                                <CustomMenuItem key={setting.label} to={setting.path} label={setting.label} onClose={handleCloseUserMenu} />
+                                <MenuItem key={setting.label} onClick={() => handleSettingsClick(setting.action)}>
+                                    <Typography textAlign="center">
+                                        {setting.label === 'Toggle Dark Mode' ? getDarkModeToggleLabel() : setting.label}
+                                    </Typography>
+                                </MenuItem>
                             ))}
                         </Menu>
                     </Box>

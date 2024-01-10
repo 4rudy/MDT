@@ -1,0 +1,64 @@
+.scroll-container {
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc transparent;
+}
+
+.scroll-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+}
+
+textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+}
+
+.dark textarea {
+    background-color: #333;
+    color: #fff;
+    border-color: #555;
+}
+
+.light textarea {
+    background-color: #fff;
+    color: #333;
+    border-color: #ccc;
+}
+
+.profiles-second-column {
+    flex: 1;
+    width: 30%;
+    border: 1px solid #ccc;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.profiles-details {
+    flex: 1;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+}
+
+.profile-info img {
+    width: 175px;
+    height: 175px;
+    margin-right: 30px;
+}
