@@ -1,35 +1,44 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import './Profiles.css';  // Adjust the path accordingly
+import CircularProgress from '@mui/material/CircularProgress';
+import { useMDTContext } from '../../MDTContext';
 
-function Profiles() {
-    const [profiles, setProfiles] = useState([]);
+import './Profiles.css';
+
+function Profiles({ darkMode, toggleDarkMode }) {
+    const { profiles, fetchProfiles } = useMDTContext();
     const [selectedProfile, setSelectedProfile] = useState(null);
     const [searchInput, setSearchInput] = useState('');
-
-    useEffect(() => {
-        fetch('http://localhost:5000/profiles')
-            .then(response => response.json())
-            .then(data => setProfiles(data))
-            .catch(error => console.error('Error fetching profiles:', error));
-    }, []);
+    const [imageLoading, setImageLoading] = useState(true);
 
     const handleProfileClick = (profile) => {
         setSelectedProfile(profile);
+        setImageLoading(true);
+    };
+
+    const handleImageLoad = () => {
+        setImageLoading(false);
+    };
+
+    const handleInputChange = (e, field) => {
+        setSelectedProfile((prevProfile) => ({
+            ...prevProfile,
+            [field]: e.target.value,
+        }));
     };
 
     const filteredProfiles = profiles.filter(profile =>
-        profile.name.toLowerCase().includes(searchInput.toLowerCase())
+        profile.name.toLowerCase().includes(searchInput.toLowerCase()) ||
+        profile.csn.toLowerCase().includes(searchInput.toLowerCase())
     );
 
     return (
-        <div style={{ display: 'flex' }}>
+        <div className={darkMode ? 'dark-mode' : ''} style={{ display: 'flex' }}>
             <div className="profiles-first-column" style={{ flex: 1, width: '30%', border: '1px solid #ccc', padding: '10px' }}>
                 <div className="stickey-header" style={{ marginBottom: '20px', display: 'flex', alignItems: 'center' }}>
                     <h2 style={{ marginRight: '30px' }}>Profiles</h2>
                     <TextField
-                        label="Search"
                         variant="standard"
                         fullWidth
                         value={searchInput}
@@ -57,19 +66,48 @@ function Profiles() {
                 {selectedProfile && (
                     <>
                         <div className="profile-info">
+                            {imageLoading && <CircularProgress style={{ marginBottom: '10px' }} />}
                             <img
                                 src={selectedProfile.image}
-                                alt="Profile"
+                                alt="profilepicture"
+                                onLoad={handleImageLoad}
+                                style={{ display: imageLoading ? 'none' : 'block' }}
                             />
                             <div>
-                                <p>Name: {selectedProfile.name}</p>
-                                <p>CSN: {selectedProfile.csn}</p>
+                                <TextField
+                                    id="name"
+                                    label="Name"
+                                    value={selectedProfile.name}
+                                    fullWidth
+                                    variant="standard"
+                                    onChange={(e) => handleInputChange(e, 'name')}
+                                />
+                                <TextField
+                                    id="csn"
+                                    label="CSN"
+                                    value={selectedProfile.csn}
+                                    fullWidth
+                                    variant="standard"
+                                    onChange={(e) => handleInputChange(e, 'csn')}
+                                />
+                                <TextField
+                                    id="fingerprint"
+                                    label="Fingerprint"
+                                    value={selectedProfile.fingerprint}
+                                    fullWidth
+                                    variant="standard"
+                                    onChange={(e) => handleInputChange(e, 'fingerprint')}
+                                />
                             </div>
                         </div>
                         <div className='profiles-details'>
-                            <textarea
+                            <TextField
                                 id="details"
                                 value={selectedProfile.information}
+                                fullWidth
+                                multiline
+                                variant="standard"
+                                onChange={(e) => handleInputChange(e, 'information')}
                             />
                         </div>
                     </>

@@ -12,11 +12,11 @@ import Profiles from './pages/sidebar/Profiles';
 import Properties from './pages/sidebar/Properties';
 import Employement from './pages/sidebar/Employement';
 import Charges from './pages/sidebar/Charges';
-import { ThemeProvider } from './ThemeContext';
+import { MDTProvider } from './MDTContext';
 
 function App() {
   return (
-    <ThemeProvider>
+    <MDTProvider>
 
       <Router>
         <Box sx={{ display: 'flex' }}>
@@ -37,7 +37,7 @@ function App() {
           </Box>
         </Box>
       </Router>
-    </ThemeProvider>
+    </MDTProvider>
   );
 }
 

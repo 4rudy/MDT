@@ -1,6 +1,8 @@
 from faker import Faker
-from models import Profile, Charge
-from config import app, db
+from faker_vehicle import VehicleProvider
+from models import Profile, Charge, Vehicle
+from config import app, db, Base
+from sqlalchemy.exc import IntegrityError
 from random import sample
 import json
 import string
@@ -9,6 +11,7 @@ import random
 from charges import penal_code
 
 fake = Faker()
+fake.add_provider(VehicleProvider)
 
 random_tags = [
     "DNA on File", "Gang Member", "Stolen Firearm", "Stolen Vehicle", "Weapon License Revoked", "Drivers License Suspended", "Life Sentence",
@@ -19,7 +22,13 @@ random_licenses = [
     "Weapons", "Drivers", "Hunting", "Business", "Law", "Medical"
 ]
 
-def generate_random_data():
+def drop_all_tables():
+    Base.metadata.drop_all(bind=db.engine)
+
+def create_all_tables():
+    Base.metadata.create_all(bind=db.engine)
+
+def seed_profiles():
     with app.app_context():
         for _ in range(500):
             num_tags = fake.random_int(min=0, max=3)
@@ -57,7 +66,35 @@ def seed_charges():
                     db.session.add(new_charge)
             db.session.commit()
 
+def seed_vehicles():
+    with app.app_context():
+        for _ in range(500):
+            machine_object_data = json.loads(json.dumps(fake.machine_object()))
+            profile_ids = [profile.id for profile in Profile.query.all()]
+
+            while True:
+                random_characters = fake.random_elements(elements=('A', 'B', 'C', 'D', '0', '1', '2', '3'), length=8, unique=True)
+                plate = f"{''.join(random_characters[:4])}-{''.join(random_characters[4:])}"
+                random_profile_id = random.choice(profile_ids)
+
+                new_vehicle = Vehicle(
+                    make=machine_object_data["Make"],
+                    model=machine_object_data["Model"],
+                    year=machine_object_data["Year"],
+                    color=fake.color_name(),
+                    plate=plate,
+                    profile_id=random_profile_id,
+                )
+                try:
+                    db.session.add(new_vehicle)
+                    db.session.commit()
+                    break
+                except IntegrityError:
+                    db.session.rollback()
+
 if __name__ == "__main__":
-    # pass
+    drop_all_tables()
+    create_all_tables()
     seed_charges()
-    generate_random_data()
+    seed_profiles()
+    seed_vehicles()

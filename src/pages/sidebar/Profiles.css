@@ -62,3 +62,9 @@ textarea {
     height: 175px;
     margin-right: 30px;
 }
+
+.dark-mode textarea {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #555;
+}
