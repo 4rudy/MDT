@@ -3,7 +3,7 @@ from sqlalchemy.orm import validates
 from config import db
 from sqlalchemy import JSON
 
-employee_businesses = db.Table('employee_businesses', db.Model.metadata, #many to many
+employee_businesses = db.Table('employee_businesses', db.Model.metadata,  # many to many
     db.Column('employee_id', db.Integer, db.ForeignKey('employees.id', ondelete='CASCADE', onupdate='CASCADE')),
     db.Column('business_id', db.Integer, db.ForeignKey('businesses.id', ondelete='CASCADE', onupdate='CASCADE'))
 )
@@ -13,8 +13,8 @@ vehicle_profiles = db.Table('vehicle_profiles', db.Model.metadata,  # many-to-ma
     db.Column('profile_id', db.Integer, db.ForeignKey('profiles.id', ondelete='CASCADE', onupdate='CASCADE'))
 )
 
-house_profiles = db.Table('house_profiles', db.Model.metadata,  # many-to-many
-    db.Column('house_id', db.Integer, db.ForeignKey('houses.id', ondelete='CASCADE', onupdate='CASCADE')),
+property_profiles = db.Table('property_profiles', db.Model.metadata,  # many-to-many
+    db.Column('property_id', db.Integer, db.ForeignKey('properties.id', ondelete='CASCADE', onupdate='CASCADE')),
     db.Column('profile_id', db.Integer, db.ForeignKey('profiles.id', ondelete='CASCADE', onupdate='CASCADE'))
 )
 
@@ -49,7 +49,7 @@ class Profile(db.Model, SerializerMixin):
 
     @validates('csn')
     def validate_csn(self, key, value):
-        if not (len(value) == 8 and value[:4].isalpha() and value[4:].isdigit()): #first 4 letters, last 4 num
+        if not (len(value) == 8 and value[:4].isalpha() and value[4:].isdigit()):  # first 4 letters, last 4 num
             raise ValueError('CSN must have 4 letters followed by 4 numbers')
         return value
 
@@ -98,22 +98,22 @@ class Charge(db.Model, SerializerMixin):
 class Business(db.Model, SerializerMixin):
     __tablename__ = 'businesses'
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String)
+    name = db.Column(db.String)
     category = db.Column(db.Text)
-    description = db.Column(db.Text)
-    profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id', ondelete='SET NULL', onupdate='CASCADE'))
+    about = db.Column(db.Text)
     #relationships
     # profile = db.relationship('Profile', backref='businesses') #one to many
 
 
-class House(db.Model, SerializerMixin):
-    __tablename__ = 'houses'
+class Property(db.Model, SerializerMixin):
+    __tablename__ = 'properties'
     id = db.Column(db.Integer, primary_key=True)
     address = db.Column(db.String)
     zipcode = db.Column(db.Integer)
     profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id', ondelete='SET NULL', onupdate='CASCADE'))
-    #relationships
-    profiles = db.relationship('Profile', secondary=house_profiles, backref='houses')  # many-to-many
+    business_id = db.Column(db.Integer, db.ForeignKey('businesses.id', ondelete='SET NULL', onupdate='CASCADE'), unique=True)
+    # relationships
+    profiles = db.relationship('Profile', secondary=property_profiles, backref='properties')  # many-to-many
 
 class Employee(db.Model, SerializerMixin):
     __tablename__ = 'employees'

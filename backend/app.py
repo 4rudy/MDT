@@ -38,6 +38,18 @@ class Login(Resource):
 api.add_resource(Login, '/login')
 
 
+class SingleUser(Resource):
+    def get(self, user_id):
+        user = User.query.get(user_id)
+
+        if not user:
+            response = make_response(jsonify({'error': 'User not found'}), 404)
+        else:
+            response = make_response(jsonify(user.to_dict()), 200)
+        return response
+api.add_resource(SingleUser, '/users/<int:user_id>')
+
+
 class SingleProfile(Resource):
     def get(self, profile_id):
         profile = Profile.query.get(profile_id)
@@ -153,6 +165,7 @@ class SingleCharge(Resource):
         return response
 api.add_resource(SingleCharge, '/charges/<int:charge_id>')
 
+
 class AllCharges(Resource):
     def get(self):
         charges = Charge.query.all()
@@ -179,6 +192,82 @@ class AllCharges(Resource):
         response = make_response(jsonify({'message': 'Charge created successfully'}), 201)
         return response
 api.add_resource(AllCharges, '/charges')
+
+
+class SingleVehicle(Resource):
+    def get(self, vehicle_id):
+        vehicle = Vehicle.query.get(vehicle_id)
+
+        if not vehicle:
+            response = make_response(jsonify({'error': 'Vehicle not found'}), 404)
+        else:
+            response = make_response(jsonify(vehicle.to_dict()), 200)
+        return response
+api.add_resource(SingleVehicle, '/vehicles/<int:vehicle_id>')
+
+
+class AllVehicles(Resource):
+    def get(self):
+        vehicles = Vehicle.query.all()
+        vehicles_list = [vehicle.to_dict() for vehicle in vehicles]
+
+        return jsonify(vehicles_list)
+
+    def post(self):
+        data = request.get_json()
+        new_vehicle = Vehicle(
+            make=data.get('make'),
+            model=data.get('model'),
+            year=data.get('year'),
+            color=data.get('color'),
+            plate=data.get('plate'),
+            profile_id=data.get('profile_id')
+        )
+
+        db.session.add(new_vehicle)
+        db.session.commit()
+
+        response = make_response(jsonify({'message': 'Vehicle created successfully'}), 201)
+        return response
+api.add_resource(AllVehicles, '/vehicles')
+
+
+class SingleProperty(Resource):
+    def get(self, property_id):
+        property = Property.query.get(property_id)
+
+        if not property:
+            response = make_response(jsonify({'error': 'Property not found'}), 404)
+        else:
+            response = make_response(jsonify(property.to_dict()), 200)
+        return response
+api.add_resource(SingleProperty, '/properties/<int:property_id>')
+
+
+class AllProperties(Resource):
+    def get(self):
+        properties = Property.query.all()
+        properties_list = [property.to_dict() for property in properties]
+
+        return jsonify(properties_list)
+
+    def post(self):
+        data = request.get_json()
+        new_property = Property(
+            address=data.get('address'),
+            city=data.get('city'),
+            state=data.get('state'),
+            zipcode=data.get('zipcode'),
+            profile_id=data.get('profile_id')
+        )
+
+        db.session.add(new_property)
+        db.session.commit()
+
+        response = make_response(jsonify({'message': 'Property created'}), 201)
+        return response
+api.add_resource(AllProperties, '/properties')
+
 
 
 @app.route('/')
