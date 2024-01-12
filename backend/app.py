@@ -80,7 +80,7 @@ class SingleProfile(Resource):
         else:
             data = request.get_json()
             profile.name = data.get('name', profile.name) #either use new name or use default name
-            profile.ssn = data.get('ssn', profile.ssn)
+            profile.csn = data.get('csn', profile.csn)
             profile.information = data.get('information', profile.information)
             profile.tags = data.get('tags', profile.tags)
             profile.image = data.get('image', profile.image)
@@ -105,9 +105,9 @@ class AllProfiles(Resource):
         data = request.get_json()
         new_profile = Profile(
             name=data.get('name'),
-            ssn=data.get('ssn'),
+            csn=data.get('csn'),
             information=data.get('information'),
-            tags=data.get('tags', []),
+            tags=[],
             image=data.get('image'),
             fingerprint=data.get('fingerprint'),
             licenses=data.get('licenses', [])

@@ -1,4 +1,5 @@
 from sqlalchemy_serializer import SerializerMixin
+import validators
 from sqlalchemy.orm import validates
 from config import db
 from sqlalchemy import JSON
@@ -51,6 +52,12 @@ class Profile(db.Model, SerializerMixin):
     def validate_csn(self, key, value):
         if not (len(value) == 8 and value[:4].isalpha() and value[4:].isdigit()):  # first 4 letters, last 4 num
             raise ValueError('CSN must have 4 letters followed by 4 numbers')
+        return value
+    
+    @validates('image')
+    def validate_image(self, key, value):
+        if not validators.url(value):
+            raise ValueError('Image must be a valid URL.')
         return value
 
 

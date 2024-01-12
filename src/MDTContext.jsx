@@ -41,6 +41,7 @@ export const MDTProvider = ({ children }) => {
     };
 
     useEffect(() => {
+        console.log('Fetching data...');
         fetchProfiles();
         fetchVehicles();
         fetchProperties();
@@ -51,6 +52,7 @@ export const MDTProvider = ({ children }) => {
         vehicles,
         properties,
         selectedProfile,
+        setProfiles,
         setSelectedProfile,
         fetchProfiles,
         fetchVehicles,

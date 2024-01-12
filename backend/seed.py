@@ -61,7 +61,6 @@ def seed_profiles():
                 fingerprint=fake.uuid4()
             )
             db.session.add(new_profile)
-
         db.session.commit()
 
 def seed_charges():
