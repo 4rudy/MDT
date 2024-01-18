@@ -37,9 +37,8 @@ function Businesses({ darkMode }) {
     const handleBusinessClick = (business) => {
         const businessId = business.id;
         const businessPropertiesData = properties.filter(property => property.business_id === businessId);
-        const businessProfilesData = profiles.filter(profile => profile.id === businessId);
-
         setBusinessProperties(businessPropertiesData);
+        const businessProfilesData = profiles.filter(profile => profile.id === businessProperties[0]?.profile_id);
         setBusinessProfile(businessProfilesData);
         setSelectedBusinessIndex(businessId)
         setSelectedBusiness(business);
