@@ -129,6 +129,9 @@ def seed_properties():
             profile = Profile.query.order_by(func.random()).first()
             business = Business.query.order_by(func.random()).first()
 
+            if profile is None or business is None:
+                continue
+
             new_property = Property(
                 address=fake.address(),
                 zipcode=fake.zipcode(),
@@ -142,11 +145,6 @@ def seed_properties():
                 db.session.commit()
             except IntegrityError:
                 db.session.rollback()
-
-if __name__ == "__main__":
-    seed_properties()
-
-
 
 
 if __name__ == "__main__":

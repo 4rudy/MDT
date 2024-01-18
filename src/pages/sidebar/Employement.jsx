@@ -193,7 +193,7 @@ function Businesses({ darkMode }) {
                                     />
                                     <BusinessCard
                                         title="Owner"
-                                            data={businessProfile.length > 0 && businessProfile[0].name ? [businessProfile[0].name] : []}
+                                        data={businessProfile.length > 0 && businessProfile[0].name ? [businessProfile[0].name] : []}
                                     />
                                     <BusinessCard
                                         title="Address"

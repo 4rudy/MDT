@@ -5,6 +5,7 @@ import { useMDTContext } from '../../MDTContext';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import { FixedSizeList } from 'react-window';
+import BusinessCard from './sbcomponents/BusinessCard';
 
 function Charges({ darkMode }) {
     const { charges, setSelectedCharge } = useMDTContext();
@@ -119,13 +120,29 @@ function Charges({ darkMode }) {
                     ))}
                 </div>
             </div>
-            <div className="charge-details" style={{ flex: 0.5, border: '1px solid #ccc', padding: '20px' }}>
+            <div className="charge-details" style={{ flex: 0.7, border: '1px solid #ccc', padding: '20px' }}>
                 {selectedChargeDetails && (
                     <>
-                        <h2>Charge Details</h2>
-                        <div>
-                            <strong>Title:</strong> {selectedChargeDetails.title}
-                        </div>
+                        <BusinessCard
+                            title={selectedChargeDetails.penal_title}
+                            data={" "}
+                        />
+                        <BusinessCard
+                            title={[`${selectedChargeDetails.code} - \n${selectedChargeDetails.title}`]}
+                            data={selectedChargeDetails.description}
+                        />
+                        <BusinessCard
+                            title={"Sentencing"}
+                            data={[
+                                <>Time: {selectedChargeDetails.months} months<br /></>,
+                                <>Fine: ${selectedChargeDetails.fine}<br /></>,
+                                <>Points on License: {selectedChargeDetails.points}</>
+                            ]}
+                        />
+                        <BusinessCard
+                            title={selectedChargeDetails.category}
+                            data={" "}
+                        />
                     </>
                 )}
             </div>
