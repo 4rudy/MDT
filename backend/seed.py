@@ -3,6 +3,7 @@ from faker_vehicle import VehicleProvider
 from models import *
 from config import app, db, Base
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import func
 from random import sample
 import json
 import string
@@ -119,19 +120,33 @@ def seed_businesses():
             db.session.add(new_business)
         db.session.commit()
 
+from sqlalchemy.exc import IntegrityError
+
+
 def seed_properties():
     with app.app_context():
         for _ in range(500):
-            profile_ids = [profile.id for profile in Profile.query.all()]
-            random_profile_id = random.choice(profile_ids)
+            profile = Profile.query.order_by(func.random()).first()
+            business = Business.query.order_by(func.random()).first()
 
             new_property = Property(
                 address=fake.address(),
                 zipcode=fake.zipcode(),
-                profile_id=random_profile_id
+                profile_id=profile.id,
+                business_id=business.id
             )
+
             db.session.add(new_property)
-        db.session.commit()
+
+            try:
+                db.session.commit()
+            except IntegrityError:
+                db.session.rollback()
+
+if __name__ == "__main__":
+    seed_properties()
+
+
 
 
 if __name__ == "__main__":

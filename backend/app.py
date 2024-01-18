@@ -269,6 +269,40 @@ class AllProperties(Resource):
 api.add_resource(AllProperties, '/properties')
 
 
+class SingleBusiness(Resource):
+    def get(self, business_id):
+        business = Business.query.get(business_id)
+
+        if not business:
+            response = make_response(jsonify({'error': 'Business not found'}), 404)
+        else:
+            response = make_response(jsonify(business.to_dict()), 200)
+        return response
+api.add_resource(SingleBusiness, '/businesses/<int:business_id>')
+
+
+class AllBusiness(Resource):
+    def get(self):
+        businesses = Business.query.all()
+        businesses_list = [business.to_dict() for business in businesses]
+
+        return jsonify(businesses_list)
+
+    def post(self):
+        data = request.get_json()
+        new_business = Business(
+            name=data.get('name'),
+            category=data.get('category'),
+            about=data.get('about')
+        )
+
+        db.session.add(new_business)
+        db.session.commit()
+
+        response = make_response(jsonify({'message': 'Business created'}), 201)
+        return response
+api.add_resource(AllBusiness, '/businesses')
+
 
 @app.route('/')
 def index():

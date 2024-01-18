@@ -15,9 +15,12 @@ export const useTheme = () => {
 
 export const MDTProvider = ({ children }) => {
     const [profiles, setProfiles] = useState([]);
-    const [selectedProfile, setSelectedProfile] = useState(null);
     const [vehicles, setVehicles] = useState([]);
     const [properties, setProperties] = useState([]);
+    const [businesses, setBusinesses] = useState([]);
+    const [selectedProfile, setSelectedProfile] = useState(null);
+    const [selectedProperty, setSelectedProperty] = useState(null);
+    const [selectedBusiness, setSelectedBusiness] = useState(null);
 
     const fetchProfiles = () => {
         fetch("http://localhost:5000/profiles")
@@ -40,23 +43,38 @@ export const MDTProvider = ({ children }) => {
             .catch((error) => console.error('Error fetching properties:', error));
     };
 
+    const fetchBusinesses = () => {
+        fetch("http://localhost:5000/businesses")
+            .then((response) => response.json())
+            .then((data) => setBusinesses(data))
+            .catch((error) => console.error('Error fetching businesses:', error));
+    };
+
     useEffect(() => {
-        console.log('Fetching data...');
         fetchProfiles();
         fetchVehicles();
         fetchProperties();
+        fetchBusinesses();
     }, []);
 
     const MDTContextValue = {
         profiles,
         vehicles,
         properties,
+        businesses,
         selectedProfile,
+        selectedProperty,
+        selectedBusiness,
         setProfiles,
+        setProperties,
+        setBusinesses,
         setSelectedProfile,
+        setSelectedProperty,
+        setSelectedBusiness,
         fetchProfiles,
         fetchVehicles,
         fetchProperties,
+        fetchBusinesses,
     };
 
     const [darkMode, setDarkMode] = useState(true);

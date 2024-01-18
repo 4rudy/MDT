@@ -43,7 +43,7 @@ function Profiles({ darkMode }) {
         const profileId = profile.id;
         const profileVehiclesData = vehicles.filter(vehicle => vehicle.profile_id === profileId);
         const profilePropertiesData = properties.filter(property => property.profile_id === profileId);
-        console.log(profileId)
+
         setSelectedProfileIndex(profileId)
         setSelectedProfile(profile);
         setImageLoading(true);

@@ -23,7 +23,7 @@ const Sidebar = () => (
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}>
             <List>
-                {['Dashboard', 'Profiles', 'Incidents', 'Properties', 'Employment', 'Charges'].map((text, index) => (
+                {['Dashboard', 'Profiles', 'Properties', 'Businesses', 'Charges'].map((text, index) => (
                     <ListItem key={text} disablePadding>
                         <ListItemButton component={Link} to={`/${text.toLowerCase()}`}>
                             <ListItemIcon>
