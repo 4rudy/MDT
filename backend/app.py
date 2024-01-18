@@ -241,6 +241,18 @@ class SingleProperty(Resource):
         else:
             response = make_response(jsonify(property.to_dict()), 200)
         return response
+
+    def delete(self, property_id):
+        property = Property.query.get(property_id)
+
+        if not property:
+            response = make_response(jsonify({'error': 'Property not found'}), 404)
+        else:
+            db.session.delete(property)
+            db.session.commit()
+
+            response = make_response(jsonify({'message': 'Property deleted'}), 200)
+        return response
 api.add_resource(SingleProperty, '/properties/<int:property_id>')
 
 
